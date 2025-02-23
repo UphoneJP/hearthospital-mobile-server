@@ -201,11 +201,15 @@ module.exports.notifyFalse = async (req, res)=> {
 module.exports.penName = async(req, res)=>{
   const {id} = req.params
   const {penNameInput} = req.body
-  const user = await User.findByIdAndUpdate(id, { penName: penNameInput }, { new: true })
-  if(!user){
-    res.status(401).json({message: "ユーザーが見つかりません"})
+  if(penNameInput.trim()){
+    const user = await User.findByIdAndUpdate(id, { penName: penNameInput, username: '' }, { new: true })
+    if(!user){
+      res.status(401).json({message: "ユーザーが見つかりません"})
+    }
+    res.status(200).json({user})
+  } else {
+    res.status(401).json({message: 'ペンネームの入力が空欄です'})
   }
-  res.status(200).json({user})
 }
 
 module.exports.promotion = async(req, res)=>{
